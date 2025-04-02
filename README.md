@@ -15,8 +15,8 @@ This project allows users to run a full ML pipeline (preprocessing, model select
 
 1. Clone the repo:
 ```bash
-git clone https://github.com/yourusername/automl_micro.git
-cd automl_micro
+git clone https://github.com/yourusername/automl.git
+cd automl
 ```
 
 2. Create a virtual environment and install dependencies:
