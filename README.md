@@ -39,6 +39,54 @@ python cli/main.py --dataset path/to/your.csv
 - `config/`: configuration files
 - `tests/`: unit tests
 
+## 🚀 What Does It Automate?
+
+1. **Dataset Loading**  
+   Accepts standard `.csv` files, even unprocessed ones.
+
+2. **Automatic Preprocessing**  
+   - Missing value imputation
+   - Categorical variable encoding
+   - Feature scaling
+
+3. **Model Selection**  
+   - Classification models: RandomForest, XGBoost, LogisticRegression  
+   - (Regression support planned)
+
+4. **Hyperparameter Optimization**  
+   - Grid Search and/or Optuna integration
+
+5. **Model Training with Cross-Validation**
+
+6. **Evaluation and Reporting**  
+   - Accuracy, Precision, Recall, F1, Confusion Matrix
+
+7. **Outputs**  
+   - Trained model (`.pkl`)
+   - Evaluation metrics (`.json` or `.txt`)
+   - Optional: CSV with predictions
+
+---
+
+## 👥 Who Is It For?
+
+- **Data Scientists** needing fast prototyping pipelines
+- **ML Engineers** who want to modularize standard workflows
+- **Students** learning ML without rebuilding pipelines every time
+- **Startups or solo developers** looking for simple but effective AutoML tools
+
+---
+
+## 💡 Example Usage
+
+```bash
+python cli/main.py --dataset data/titanic.csv
+```
+
+**Outputs:**
+- Saved model: `outputs/best_model.pkl`
+- Report file: `outputs/report.json`
+
 ## 📌 License
 
 MIT License.
