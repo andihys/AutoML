@@ -1,0 +1,13 @@
+target: species
+
+preprocessing:
+  scaling: standard
+  encoding: onehot
+  imputation_num: mean
+  imputation_cat: most_frequent
+
+model:
+  name: randomforest
+  params:
+    n_estimators: 100
+    max_depth: 5
