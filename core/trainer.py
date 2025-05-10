@@ -20,7 +20,7 @@ def split_data(
         random_state (int): Seed for reproducibility
 
     Returns:
-        X_train, X_test, y_train, y_test
+        Tuple of train/test splits: X_train, X_test, y_train, y_test
     """
     return train_test_split(X, y, test_size=test_size, random_state=random_state)
 
@@ -29,6 +29,17 @@ def train_model(
     X: np.ndarray,
     y: np.ndarray
 ) -> BaseEstimator:
+    """
+    Fits the model on the training data.
+
+    Args:
+        model (BaseEstimator): scikit-learn compatible model
+        X (np.ndarray): Feature matrix for training
+        y (np.ndarray): Target vector for training
+
+    Returns:
+        Trained model
+    """
     model.fit(X, y)
     return model
 
@@ -37,6 +48,17 @@ def evaluate_model(
     X: np.ndarray,
     y: np.ndarray
 ) -> float:
+    """
+    Evaluates the model performance on the given data using accuracy.
+
+    Args:
+        model (BaseEstimator): Trained model
+        X (np.ndarray): Feature matrix for evaluation
+        y (np.ndarray): True labels
+
+    Returns:
+        Accuracy score as a float
+    """
     y_pred = model.predict(X)
     acc = accuracy_score(y, y_pred)
     return acc
