@@ -4,8 +4,8 @@ import pandas as pd
 from core.preprocessing import preprocess_dataframe
 from core.model_selection import get_model
 from core.trainer import train_model, evaluate_model
-
 from cli.config_loader import load_config
+from core.saver import save_model
 
 
 def run_pipeline(df: pd.DataFrame) -> None:
@@ -28,5 +28,8 @@ def run_pipeline(df: pd.DataFrame) -> None:
 
     accuracy = evaluate_model(model, X_processed, y)
     logging.info(f"📊 Accuracy on full dataset: {accuracy:.4f}")
+
+    model_path = save_model(model)
+    logging.info(f"💾 Model saved at: {model_path}")
 
     logging.info("🎉 Pipeline completed.")
