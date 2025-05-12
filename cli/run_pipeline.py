@@ -6,6 +6,7 @@ from core.preprocessing import preprocess_dataframe
 from core.model_selection import get_model
 from core.trainer import split_data, train_model, evaluate_model
 from core.saver import save_model
+from core.result_saver import save_results
 
 def run_pipeline(df: pd.DataFrame) -> None:
     """
@@ -16,7 +17,7 @@ def run_pipeline(df: pd.DataFrame) -> None:
     - Train/test split
     - Training
     - Evaluation
-    - Model saving
+    - Model and results saving
 
     Args:
         df (pd.DataFrame): Input dataset including target column
@@ -53,5 +54,16 @@ def run_pipeline(df: pd.DataFrame) -> None:
     # Step 6: Model saving
     model_path = save_model(model)
     logging.info(f"💾 Model saved at: {model_path}")
+
+    # Step 7: Results saving
+    results = {
+        "model_name": model.__class__.__name__,
+        "accuracy": round(accuracy, 4),
+        "train_size": X_train.shape[0],
+        "test_size": X_test.shape[0],
+        "model_path": model_path
+    }
+    results_path = save_results(results)
+    logging.info(f"📝 Results saved at: {results_path}")
 
     logging.info("🎉 Pipeline completed.")
