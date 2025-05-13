@@ -1,29 +1,22 @@
 import logging
 import pandas as pd
 
-from cli.config_loader import load_config
 from core.preprocessing import preprocess_dataframe
 from core.model_selection import get_model
 from core.trainer import split_data, train_model, evaluate_model
 from core.saver import save_model
 from core.result_saver import save_results
 
-def run_pipeline(df: pd.DataFrame) -> None:
+def run_pipeline(df: pd.DataFrame, config: dict, output_dir: str = "artifacts") -> None:
     """
-    Orchestrates the AutoML pipeline steps:
-    - Load config
-    - Preprocessing
-    - Model selection
-    - Train/test split
-    - Training
-    - Evaluation
-    - Model and results saving
+    Orchestrates the AutoML pipeline steps.
 
     Args:
-        df (pd.DataFrame): Input dataset including target column
+        df (pd.DataFrame): Input dataset
+        config (dict): Configuration dictionary
+        output_dir (str): Directory to save artifacts
     """
-    config = load_config()
-    logging.info("⚙️  Loaded config from config/default.yaml")
+    logging.info("⚙️  Running pipeline with provided configuration.")
 
     target_col = config["target"]
     if target_col not in df.columns:
@@ -36,7 +29,7 @@ def run_pipeline(df: pd.DataFrame) -> None:
     # Step 2: Model selection
     model_name = config["model"]["name"]
     model = get_model(model_name)
-    logging.info(f"📦 Model selected from config: {model.__class__.__name__}")
+    logging.info(f"📦 Model selected: {model.__class__.__name__}")
 
     # Step 3: Train/Test split
     test_size = config.get("test_size", 0.2)
@@ -51,11 +44,11 @@ def run_pipeline(df: pd.DataFrame) -> None:
     accuracy = evaluate_model(model, X_test, y_test)
     logging.info(f"📊 Accuracy on test set: {accuracy:.4f}")
 
-    # Step 6: Model saving
-    model_path = save_model(model)
+    # Step 6: Saving model
+    model_path = save_model(model, output_dir=output_dir)
     logging.info(f"💾 Model saved at: {model_path}")
 
-    # Step 7: Results saving
+    # Step 7: Saving results
     results = {
         "model_name": model.__class__.__name__,
         "accuracy": round(accuracy, 4),
@@ -63,7 +56,7 @@ def run_pipeline(df: pd.DataFrame) -> None:
         "test_size": X_test.shape[0],
         "model_path": model_path
     }
-    results_path = save_results(results)
+    results_path = save_results(results, output_dir=output_dir)
     logging.info(f"📝 Results saved at: {results_path}")
 
-    logging.info("🎉 Pipeline completed.")
+    logging.info("🎉 Pipeline completed successfully.")
