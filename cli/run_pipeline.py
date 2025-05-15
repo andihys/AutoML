@@ -23,12 +23,13 @@ def run_pipeline(df: pd.DataFrame, config: dict, output_dir: str = "artifacts") 
         raise ValueError(f"Target column '{target_col}' not found in dataset.")
 
     # Step 1: Preprocessing
-    X_processed, y = preprocess_dataframe(df, target_col)
+    X_processed, y, task = preprocess_dataframe(df, target_col)
     logging.info(f"✅ Preprocessing completed. Feature matrix shape: {X_processed.shape}")
+    logging.info(f"🧠 Detected task type: {task}")
 
     # Step 2: Model selection
     model_name = config["model"]["name"]
-    model = get_model(model_name)
+    model = get_model(model_name, task)
     logging.info(f"📦 Model selected: {model.__class__.__name__}")
 
     # Step 3: Train/Test split
@@ -42,7 +43,7 @@ def run_pipeline(df: pd.DataFrame, config: dict, output_dir: str = "artifacts") 
 
     # Step 5: Evaluation
     accuracy = evaluate_model(model, X_test, y_test)
-    logging.info(f"📊 Accuracy on test set: {accuracy:.4f}")
+    logging.info(f"📊 Evaluation metric (accuracy or R2): {accuracy:.4f}")
 
     # Step 6: Saving model
     model_path = save_model(model, output_dir=output_dir)
@@ -51,7 +52,8 @@ def run_pipeline(df: pd.DataFrame, config: dict, output_dir: str = "artifacts") 
     # Step 7: Saving results
     results = {
         "model_name": model.__class__.__name__,
-        "accuracy": round(accuracy, 4),
+        "task": task,
+        "score": round(accuracy, 4),
         "train_size": X_train.shape[0],
         "test_size": X_test.shape[0],
         "model_path": model_path
