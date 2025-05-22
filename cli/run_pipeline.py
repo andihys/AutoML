@@ -8,14 +8,6 @@ from core.saver import save_model
 from core.result_saver import save_results
 
 def run_pipeline(df: pd.DataFrame, config: dict, output_dir: str = "artifacts") -> None:
-    """
-    Orchestrates the AutoML pipeline steps.
-
-    Args:
-        df (pd.DataFrame): Input dataset
-        config (dict): Configuration dictionary
-        output_dir (str): Directory to save artifacts
-    """
     logging.info("⚙️  Running pipeline with provided configuration.")
 
     target_col = config["target"]
@@ -42,8 +34,11 @@ def run_pipeline(df: pd.DataFrame, config: dict, output_dir: str = "artifacts") 
     logging.info("✅ Model training completed.")
 
     # Step 5: Evaluation
-    accuracy = evaluate_model(model, X_test, y_test)
-    logging.info(f"📊 Evaluation metric (accuracy or R2): {accuracy:.4f}")
+    metrics = evaluate_model(model, X_test, y_test, task)
+    metric_name = metrics.pop("metric")
+    logging.info(f"📊 Evaluation ({metric_name}):")
+    for k, v in metrics.items():
+        logging.info(f"    {k}: {v}")
 
     # Step 6: Saving model
     model_path = save_model(model, output_dir=output_dir)
@@ -53,7 +48,8 @@ def run_pipeline(df: pd.DataFrame, config: dict, output_dir: str = "artifacts") 
     results = {
         "model_name": model.__class__.__name__,
         "task": task,
-        "score": round(accuracy, 4),
+        "metric": metric_name,
+        **metrics,
         "train_size": X_train.shape[0],
         "test_size": X_test.shape[0],
         "model_path": model_path
